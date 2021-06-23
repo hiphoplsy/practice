@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { Form, Input, Button } from 'antd';
 
 import useInput from '../hooks/useInput';
 
-const LoginForm = ({ setIsLoggedIn }) => {
+const LoginForm = () => {
+  const dispatch = useDispatch();
 
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
@@ -14,7 +15,9 @@ const LoginForm = ({ setIsLoggedIn }) => {
     console.log({
       email, password
     });
-    setIsLoggedIn(true);
+    dispatch({
+      
+    })
   }, [email, password]);
 
   return (
@@ -50,10 +53,6 @@ const LoginForm = ({ setIsLoggedIn }) => {
       </div>
     </Form>
   )
-}
-
-LoginForm.propTypes = {
-  setIsLoggedIn: PropTypes.bool,
-}
+};
 
 export default LoginForm;
