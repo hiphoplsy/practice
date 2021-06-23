@@ -34,7 +34,7 @@ const Signup = () => {
   const onChangeTerm = (e) => {
     setTermError(false);
     setTerm(e.target.checked);
-  };  
+  };
 
   return (
     <>
