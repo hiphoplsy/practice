@@ -5,6 +5,8 @@ import { Form, Input, Button } from 'antd';
 
 import useInput from '../hooks/useInput';
 
+import { LOG_IN_REQUEST } from '../reducers/user';
+
 const LoginForm = () => {
   const dispatch = useDispatch();
 
@@ -16,7 +18,8 @@ const LoginForm = () => {
       email, password
     });
     dispatch({
-      
+      type: LOG_IN_REQUEST,
+      data: { email, password },
     })
   }, [email, password]);
 
