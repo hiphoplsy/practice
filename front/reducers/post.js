@@ -1,3 +1,5 @@
+import produce from 'immer';
+
 export const initialState = {
     mainPosts: [{
       id: 1,
@@ -27,6 +29,9 @@ export const initialState = {
     }],
     imagePaths: [],
     postAdded: false,
+    addPostLoading: false, // 게시글 작성 시도중
+    addPostDone: false,
+    addPostError: null,
 };
 
 const dummyPost = {
@@ -40,15 +45,30 @@ const dummyPost = {
   Comments: [],
 };
 
-const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
-const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
-const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
+export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
+export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
+export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
 
-const reducer = (state = initialState, action) => {
-  switch(action.type) {
+const reducer = (state = initialState, action) => produce(state, (draft) => {
+  switch(action.type){
+    case ADD_POST_REQUEST:
+      draft.addPostLoading = true;
+      draft.addPostDone = false;
+      draft.addPostError = null;
+      break;
+    case ADD_POST_SUCCESS:
+      draft.addPostLoading = false;
+      draft.addPostDone = true;
+      draft.mainPosts.unshift(dummyPost(action.data));
+      break;
+    case ADD_POST_FAILURE:
+      draft.addPostLoading = false;
+      draft.addPostDone = false;
+      draft.addPostError = action.error;
+      break;
     default:
-      return state;
+      break;
   }
-};
+});
 
 export default reducer;
