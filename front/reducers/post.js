@@ -1,4 +1,7 @@
 import produce from 'immer';
+import shortid from 'shortid';
+import faker from 'faker';
+import { array } from 'prop-types';
 
 export const initialState = {
     mainPosts: [{
@@ -29,28 +32,64 @@ export const initialState = {
     }],
     imagePaths: [],
     postAdded: false,
+    loadPostsLoading: false, // 게시글들 로드 시도중
+    loadPostsDone: false,
+    loadPostsError: null,
     addPostLoading: false, // 게시글 작성 시도중
     addPostDone: false,
     addPostError: null,
+    removePostLoading: false, // 게시글 삭제 시도중
+    removePostDone: false,
+    removePostError: null,
 };
 
-const dummyPost = {
-  id: 2,
-  content: '더미데이터입니다.',
+export const dummyPost = (number) => array(number).fill().map(() => ({
+  id: shortid.generate(),
   User: {
-    id: 1,
-    nickname: '제로',
+    id: shortid.generate(),
+    nickname: faker.name.findName(),
   },
-  Image: [],
-  Comments: [],
-};
+  content: faker.lorem.paragraph(),
+  Image: [{
+    src: faker.image.image(),
+  }],
+  Comments: [{
+    User: {
+      nickname: faker.name.findName(),
+    },
+    content: faker.lorem.sentence(),
+  }],
+}));
+
+export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
+export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
+export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
 
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
 
+export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
+export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
+export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
+
 const reducer = (state = initialState, action) => produce(state, (draft) => {
   switch(action.type){
+    case LOAD_POSTS_REQUEST:
+      draft.loadPostsLoading = true;
+      draft.loadPostsDone = false;
+      draft.loadPostsError = null;
+      break;
+    case LOAD_POSTS_SUCCESS:
+      draft.loadPostsLoading = false;
+      draft.loadPostsDone = true;
+      draft.mainPosts = action.data.concat(draft.mainPosts);
+      break;
+    case LOAD_POSTS_FAILURE:
+      draft.loadPostsLoading = false;
+      draft.loadPostsDone = false;
+      draft.loadPostsError = action.error;
+      break;
     case ADD_POST_REQUEST:
       draft.addPostLoading = true;
       draft.addPostDone = false;
@@ -65,6 +104,20 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
       draft.addPostLoading = false;
       draft.addPostDone = false;
       draft.addPostError = action.error;
+      break;
+    case REMOVE_POST_REQUEST:
+      draft.removePostLoading = true;
+      draft.removePostsDone = false;
+      draft.removePostError = null;
+      break;
+    case REMOVE_POST_SUCCESS:
+      draft.removePostLoading = false;
+      draft.removePostDone = true;
+      draft.mainPosts.filter((v) => v.id !== action.data);
+      break;
+    case REMOVE_POST_FAILURE:
+      draft.removePostLoading = false;
+      draft.removePostError = action.error;
       break;
     default:
       break;
