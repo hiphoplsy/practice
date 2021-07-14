@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Head from 'next/head';
+import Router from 'next/router';
+import { useDispatch, useSelector } from 'react-redux';
 import { Form, Input, Checkbox, Button } from 'antd';
 
+import { SIGN_UP_REQUEST } from '../reducers/user';
 import AppLayout from '../components/AppLayout';
 import useInput from '../hooks/useInput';
 
@@ -14,8 +17,18 @@ const Signup = () => {
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
   const [password, onChangePassword] = useInput('');
+  const dispatch = useDispatch();
+  const { me } = useSelector((state) => state.user);
 
-  const onSubmitForm =() => {
+  useEffect(() => {
+    if (me) {
+      alert('메인페이지로 이동됩니다.');
+      Router.replace('/');
+    }
+  }, [me && me.id]);
+
+
+  const onSubmit = useCallback(() => {
     if (password !== passwordCheck) {
       setPasswordError(true);
       return;
@@ -24,7 +37,15 @@ const Signup = () => {
       setTermError(true);
       return;
     }
-  };
+    return dispatch({
+      type: SIGN_UP_REQUEST,
+      data: {
+        email,
+        password,
+        nickname,
+      }
+    })
+  }, [email, password, passwordCheck, term, nickname]);
 
   const onChangePasswordCheck = (e) => {
     setPasswordError(e.target.value !== password);
@@ -42,7 +63,7 @@ const Signup = () => {
         <title>NodeBird</title>
       </Head>
       <AppLayout>
-        <Form onFinish={onSubmitForm} style={{ padding: 10 }}>
+        <Form onFinish={onSubmit} style={{ padding: 10 }}>
           <div>
             <label htmlFor="user-email">이메일</label>
             <br />

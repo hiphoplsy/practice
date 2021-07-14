@@ -43,7 +43,7 @@ export const initialState = {
     removePostError: null,
 };
 
-export const dummyPost = (number) => array(number).fill().map(() => ({
+export const generatedummyPost = (number) => array(number).fill().map(() => ({
   id: shortid.generate(),
   User: {
     id: shortid.generate(),
