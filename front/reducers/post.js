@@ -41,6 +41,9 @@ export const initialState = {
     removePostLoading: false, // 게시글 삭제 시도중
     removePostDone: false,
     removePostError: null,
+    addCommentLoading: false, // 댓글 작성 시도중
+    addCommentDone: false,
+    addCommentError: null,
     hasMorePosts: true,
 };
 
@@ -73,6 +76,10 @@ export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
 export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
 export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
 export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
+
+export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
+export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
+export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
 
 const reducer = (state = initialState, action) => produce(state, (draft) => {
   switch(action.type){
@@ -120,6 +127,21 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
     case REMOVE_POST_FAILURE:
       draft.removePostLoading = false;
       draft.removePostError = action.error;
+      break;
+    case ADD_COMMENT_REQUEST:
+      draft.addCommentLoading = true;
+      draft.addCommentDone = false;
+      draft.addCommentError = null;
+      break;
+    case ADD_COMMENT_SUCCESS:
+      draft.addCommentLoading = false;
+      draft.addCommentDone = true;
+      draft.mainPosts.find((v) => v.id === action.data.postId);
+      draft.Comments.content.unshift(action.data.content);
+      break;
+    case ADD_COMMENT_FAILURE:
+      draft.addCommentLoading = false;
+      draft.addCommentError = action.error;
       break;
     default:
       break;
