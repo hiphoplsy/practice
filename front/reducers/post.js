@@ -41,6 +41,7 @@ export const initialState = {
     removePostLoading: false, // 게시글 삭제 시도중
     removePostDone: false,
     removePostError: null,
+    hasMorePosts: true,
 };
 
 export const generatedummyPost = (number) => array(number).fill().map(() => ({
@@ -84,6 +85,7 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
       draft.loadPostsLoading = false;
       draft.loadPostsDone = true;
       draft.mainPosts = action.data.concat(draft.mainPosts);
+      draft.hasMorePosts = draft.mainPosts.length < 50;
       break;
     case LOAD_POSTS_FAILURE:
       draft.loadPostsLoading = false;
