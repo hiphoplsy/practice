@@ -110,7 +110,7 @@ function* watchRemovePost() {
   yield takeLatest(REMOVE_POST_REQUEST, removePost)
 }
 
-fucntion* watchAddComment() {
+function* watchAddComment() {
   yield takeLatest(ADD_COMMENT_REQUEST, addComment)
 }
 
