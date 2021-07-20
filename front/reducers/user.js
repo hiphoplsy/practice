@@ -29,6 +29,9 @@ export const initialState = {
     unfollowLoading: false, // 언팔로우 시도중
     unfollowDone: false,
     unfollowError: null,
+    loadUserLoading: false, // 유저정보 불러오기 시도중
+    loadUserDone: false,
+    loadUserError: null,
 };
 
 export const SIGN_UP_REQUEST = 'SIGN_UP_REQUEST';
@@ -55,6 +58,10 @@ export const UNFOLLOW_REQUEST = 'UNFOLLOW_REQUEST';
 export const UNFOLLOW_SUCCESS = 'UNFOLLOW_SUCCESS';
 export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE';
 
+export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
+export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
+export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE';
+
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 
@@ -73,6 +80,21 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
       draft.signUpLoading = false;
       draft.signUpDone = false;
       draft.signUpError = action.error;
+      break;
+    case LOAD_USER_REQUEST:
+      draft.loadUserLoading = true;
+      draft.loadUserDone = false;
+      draft.loadUserError = null;
+      break;
+    case LOAD_USER_SUCCESS:
+      draft.loadUserLoading = false;
+      draft.loadUserDone = true;
+      draft.me = action.data;
+      break;
+    case LOAD_USER_FAILURE:
+      draft.loadUserLoading = false;
+      draft.loadUserDone = false;
+      draft.loadUserError = action.error;
       break;
     case LOG_IN_REQUEST:
       draft.logInLoading = true;

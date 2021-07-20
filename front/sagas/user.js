@@ -7,6 +7,7 @@ import {
   LOG_OUT_REQUEST, LOG_OUT_SUCCESS, LOG_OUT_FAILURE,
   FOLLOW_REQUEST, FOLLOW_SUCCESS, FOLLOW_FAILURE,
   UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, UNFOLLOW_FAILURE,
+  LOAD_USER_REQUEST, LOAD_USER_SUCCESS, LOAD_USER_FAILURE,
 } from '../reducers/user';
 
 function signUpAPI(data) {
@@ -15,11 +16,10 @@ function signUpAPI(data) {
 
 function* signUp(action) {
   try {
-    yield delay(2000);
-    // const result = yield call(signUpAPI, action.data);
+    const result = yield call(signUpAPI, action.data);
     yield put({
       type: SIGN_UP_SUCCESS,
-      data: action.data,
+      data: result.data,
     })
   } catch (err) {
     console.error(err);
@@ -36,11 +36,10 @@ function logInAPI(data){
 
 function* logIn(action) {
   try {
-    yield delay(2000);
-    // const result = yield call(logInAPI, action.data);
+    const result = yield call(logInAPI, action.data);
     yield put({
       type: LOG_IN_SUCCESS,
-      data: action.data,
+      data: result.data,
     })
   } catch (err) {
     yield put({
@@ -56,7 +55,7 @@ function logOutAPI() {
 
 function* logOut() {
   try {
-    // const result = yield call(logOutAPI);
+    const result = yield call(logOutAPI);
     yield put({
       type: LOG_OUT_SUCCESS,
     })
@@ -77,7 +76,7 @@ function* follow(action) {
     const result = yield call(followAPI, action.data);
     yield put({
       type: FOLLOW_SUCCESS,
-      data: action.data,
+      data: result.data,
     })
   } catch(err) {
     console.error(err);
@@ -97,12 +96,32 @@ function* unfollow(action) {
     const result = yield call(unfollowAPI, action.data);
     yield put({
       type: UNFOLLOW_SUCCESS,
-      data: action.data,
+      data: result.data,
     })
   } catch(err) {
     console.error(err);
     yield put({
       type: UNFOLLOW_FAILURE,
+      data: err.response.data,
+    })
+  }
+}
+
+function loadUserAPI(data) {
+  return axios.get('/user', data)
+}
+
+function* loadUser(action) {
+  try {
+    const result = yield call(loadUserAPI, action.data);
+    yield put({
+      type: LOAD_USER_SUCCESS,
+      data: result.data,
+    })
+  } catch(err) {
+    console.error(err);
+    yield put({
+      type: LOAD_USER_FAILURE,
       data: err.response.data,
     })
   }
@@ -128,6 +147,10 @@ function* watchUnfollow() {
   yield takeLatest(UNFOLLOW_REQUEST, unfollow);
 }
 
+function* watchLoadUser() {
+  yield takeLatest(LOAD_USER_REQUEST, loadUser);
+}
+
 export default function* userSaga() {
   yield all([
     fork(watchLogIn),
@@ -135,5 +158,6 @@ export default function* userSaga() {
     fork(watchSignUp),
     fork(watchFollow),
     fork(watchUnfollow),
+    fork(watchLoadUser),
   ])
 }
