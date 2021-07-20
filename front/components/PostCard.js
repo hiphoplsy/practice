@@ -10,7 +10,7 @@ import { RetweetOutlined , HeartTwoTone, HeartOutlined, MessageOutlined } from '
 import PostImages from './PostImages';
 import PostCardContent from './PostCardContent';
 import CommentForm from './CommentForm';
-import { REMOVE_POST_REQUEST } from '../reducers/post';
+import { REMOVE_POST_REQUEST, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST } from '../reducers/post';
 import FollowButton from './FollowButton';
 
 const CardWrapper = styled.div`
@@ -25,8 +25,16 @@ const PostCard = ({ post }) => {
   const [liked, setLiked] = useState(false);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
 
-  const onToggleLike = useCallback(() => {
-    setLiked((prev) => !prev);
+  const onLike = useCallback(() => {
+    dispatch({
+      type: LIKE_POST_REQUEST,
+    })
+  }, []);
+
+  const onUnLike = useCallback(() => {
+    dispatch({
+      type: UNLIKE_POST_REQUEST,
+    })
   }, []);
 
   const onToggleCommentForm = useCallback(() => {
@@ -46,8 +54,8 @@ const PostCard = ({ post }) => {
         cover={post.Images[0] && <PostImages images={post.Images} />}
         actions={[<RetweetOutlined />,
           liked
-          ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onToggleLike} />
-          : <HeartOutlined key="heart" onClick={onToggleLike} />,
+          ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onUnLike} />
+          : <HeartOutlined key="heart" onClick={onLike} />,
           <MessageOutlined key="message" onClick={onToggleCommentForm} />,
           <Popover
             key="ellipsis"
