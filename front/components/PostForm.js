@@ -4,7 +4,7 @@ import { Form, Input, Button } from 'antd';
 
 import useInput from '../hooks/useInput';
 
-import { ADD_POST_REQUEST } from '../reducers/post';
+import { ADD_POST_REQUEST, UPLOAD_IMAGES_REQUEST, REMOVE_IMAGE } from '../reducers/post';
 
 const PostForm = () => {
   const { imagePaths, addPostDone } = useSelector((state) => state.post);
@@ -32,6 +32,24 @@ const PostForm = () => {
     imageInput.current.click();
   }, [imageInput.current]);
 
+  const onChangeImages = useCallback((e) => {
+    console.log('image', e.target.files);
+    const imageFormData = new FormData();
+    [].forEach().call(e.target.files, (f) => {
+      imageFormData.append('image', f);
+    });
+    dispatch({
+      type: UPLOAD_IMAGES_REQUEST,
+    })
+  }, []);
+
+  const onRemoveImage = useCallback((index) => () => {
+    dispatch({
+      type: REMOVE_IMAGE,
+      data: index,
+    })
+  }, []);
+
   return (
     <Form style={{ margin: '10px 0 20px' }} encType="multipart/form-data" onFinish={onSubmit}>
       <Input.TextArea 
@@ -41,16 +59,16 @@ const PostForm = () => {
         placeholder="어떤 신기한 일이 일어나고 있나요" 
       />
       <div>
-        <input type="file" multiple hidden ref={imageInput} />
+        <input type="file" name="image" multiple hidden ref={imageInput} onChange={onChangeImages} />
         <Button onClick={onClickImageUpload}>이미지 업로드</Button>
         <Button type="primary" style={{ float: 'right'}} htmlType="submit">짹짹</Button>
       </div>
       <div>
         {imagePaths.map((v) => (
           <div key={v} style={{ display: 'inline-block'}}>
-            <img src={v} style={{ width: '200px' }} alt={v} />
+            <img src={`http://localhost:3065/${v}`} style={{ width: '200px' }} alt={v} />
             <div>
-              <Button>이미지 제거</Button>
+              <Button onClick={onRemoveImage(i)}>이미지 제거</Button>
             </div>
           </div>
         ))}
