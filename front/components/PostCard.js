@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { Card, Popover, Button, Avatar, List, Comment } from 'antd';
 import { Link } from 'next/link';
 
@@ -10,12 +9,8 @@ import { RetweetOutlined , HeartTwoTone, HeartOutlined, MessageOutlined } from '
 import PostImages from './PostImages';
 import PostCardContent from './PostCardContent';
 import CommentForm from './CommentForm';
-import { REMOVE_POST_REQUEST, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST } from '../reducers/post';
+import { REMOVE_POST_REQUEST, LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST } from '../reducers/post';
 import FollowButton from './FollowButton';
-
-const CardWrapper = styled.div`
-  margin-bottom: 20px
-`;
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
@@ -26,33 +21,54 @@ const PostCard = ({ post }) => {
   const [commentFormOpened, setCommentFormOpened] = useState(false);
 
   const onLike = useCallback(() => {
+    if (!id) {
+      return alert('로그인이 필요합니다.');
+    }
     dispatch({
       type: LIKE_POST_REQUEST,
+      data: post.id,
     })
-  }, []);
+  }, [id]);
 
   const onUnLike = useCallback(() => {
+    if (!id) {
+      return alert('로그인이 필요합니다.');
+    }
     dispatch({
       type: UNLIKE_POST_REQUEST,
+      data: post.id,
     })
-  }, []);
+  }, [id]);
 
   const onToggleCommentForm = useCallback(() => {
     setCommentFormOpened((prev) => !prev);
   }, []);
 
   const onRemovePost = useCallback(() => {
+    if (!id) {
+      return alert('로그인이 필요합니다.');
+    }
     dispatch({
       type: REMOVE_POST_REQUEST,
       data: post.id,
     })
-  }, []);
+  }, [id]);
+
+  const onRetweet = useCallback(() => {
+    if (!id) {
+      return alert('로그인이 필요합니다.');
+    }
+    dispatch({
+      type: RETWEET_REQUEST,
+      data: post.id,
+    })
+  }, [id]);
 
   return (
-    <CardWrapper>
+    <div style={{ marginBottom: '20px' }}>
       <Card
         cover={post.Images[0] && <PostImages images={post.Images} />}
-        actions={[<RetweetOutlined />,
+        actions={[<RetweetOutlined onClick={onRetweet} />,
           liked
           ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onUnLike} />
           : <HeartOutlined key="heart" onClick={onLike} />,
@@ -73,13 +89,30 @@ const PostCard = ({ post }) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
+        title={post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다.` : null}
         extra={<FollowButton post={post} />}
       >
-      <Card.Meta
-        avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-        title={post.User.nickname[0]}
-        description={<PostCardContent postData={post.content} />}
-      />
+        {post.RetweetId && post.Retweet 
+        ? (
+          <Card>
+            <Card.Meta 
+              avatar={<Avatar>{post.Retweet.nickname[0]}</Avatar>}
+              title={post.Retweet.User.nickname[0]}
+              description={<PostCardContent postData={post.Retweet.content} />}
+            />
+          </Card>
+        )
+        : (
+          <>
+            <Card.Meta
+            avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+            title={post.User.nickname[0]}
+            description={<PostCardContent postData={post.content} />}
+            />
+          </>
+        )
+        }
+      </Card>
       {commentFormOpened && (
         <>
           <CommentForm post={post} />
@@ -101,8 +134,7 @@ const PostCard = ({ post }) => {
             />
         </>
       )}
-      </Card>
-  </CardWrapper>
+  </div>
   )
 };
 
@@ -115,6 +147,8 @@ PostCard.propTypes = {
     createdAt: PropTypes.object,
     Comments: PropTypes.arrayOf(PropTypes.any),
     Images: PropTypes.arrayOf(PropTypes.any),
+    RetweetId: PropTypes.number,
+    Retweet: PropTypes.objectOf(PropTypes.any),
   }),
 };
 
