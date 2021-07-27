@@ -47,4 +47,13 @@ const Home = () => {
   )
 }
 
+export const getServerSideProps = wrapper.getServerSideProps((context) => {
+  context.store.dispatch({
+    type: LOAD_USER_REQUEST,
+  })
+  context.store.dispatch({
+    type: LOAD_POSTS_REQUEST,
+  })
+})
+
 export default Home;
