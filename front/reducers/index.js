@@ -4,18 +4,34 @@ import { combineReducers } from 'redux';
 import user from './user';
 import post from './post';
 
-const rootReducer = combineReducers({
-  index: (state = {}, action) => {
+// const rootReducer = combineReducers({
+//   index: (state = {}, action) => {
+//   switch (action.type) {
+//     case HYDRATE:
+//       console.log('HYDRATE', action);
+//       return { ...state, ...action.payload};
+//     default:
+//       return state;
+//   }  
+// },
+//   user,
+//   post,
+// });
+
+// (이전상태, 액션) => 다음상태
+const rootReducer = (state, action) => {
   switch (action.type) {
     case HYDRATE:
-
-      return { ...state, ...action.payload};
-    default:
-      return state;
-  }  
-},
-  user,
-  post,
-});
+      console.log('HYDRATE', action);
+      return {...state, ...action.payload};
+    default: {
+      const combineReducers = combineReducers({
+        user,
+        post,
+      });
+      return combineReducers(state, action);
+    }
+  }
+};
 
 export default rootReducer;
