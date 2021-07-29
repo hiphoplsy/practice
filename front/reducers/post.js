@@ -27,6 +27,7 @@ export const initialState = {
       },
       content: 'Wow~2',
     }],
+    singlePost: null,
     imagePaths: [],
     postAdded: false,
     loadPostsLoading: false, // 게시글들 로드 시도중
@@ -57,6 +58,9 @@ export const initialState = {
     retweetLoading: false, // 리트윗 시도중
     retweetDone: false,
     retweetError: null,
+    loadPostLoading: false, // 게시글 로드 시도중
+    loadPostDone: false,
+    loadPostError: null,
 };
 
 // export const generatedummyPost = (number) => array(number).fill().map(() => ({
@@ -80,6 +84,18 @@ export const initialState = {
 export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
 export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
 export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
+
+export const LOAD_USER_POSTS_REQUEST = 'LOAD_USER_POSTS_REQUEST';
+export const LOAD_USER_POSTS_SUCCESS = 'LOAD_USER_POSTS_SUCCESS';
+export const LOAD_USER_POSTS_FAILURE = 'LOAD_USER_POSTS_FAILURE';
+
+export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
+export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
+export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
+
+export const LOAD_HASHTAG_REQUEST = 'LOAD_HASHTAG_REQUEST';
+export const LOAD_HASHTAG_SUCCESS = 'LOAD_HASHTAG_SUCCESS';
+export const LOAD_HASHTAG_FAILURE = 'LOAD_HASHTAG_FAILURE';
 
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
@@ -117,6 +133,20 @@ export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 
 const reducer = (state = initialState, action) => produce(state, (draft) => {
   switch(action.type){
+    case LOAD_POST_REQUEST:
+      draft.loadPostLoading = true;
+      draft.loadPostDone = false;
+      draft.loadPostError = null;
+      break;
+    case LOAD_POST_SUCCESS:
+      draft.loadPostLoading = false;
+      draft.loadPostDone = true;
+      draft.singlePost = action.data;
+      break;
+    case LOAD_POST_FAILURE:
+      draft.loadPostLoading = false;
+      draft.loadPostError = action.error;
+      break;
     case RETWEET_REQUEST:
       draft.retweetLoading = true;
       draft.retweetDone = false;
@@ -131,17 +161,23 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
       draft.retweetLoading = false;
       draft.retweetError = action.error;
       break;
+    case LOAD_USER_POSTS_REQUEST:
+    case LOAD_HASHTAG_REQUEST:
     case LOAD_POSTS_REQUEST:
       draft.loadPostsLoading = true;
       draft.loadPostsDone = false;
       draft.loadPostsError = null;
       break;
+    case LOAD_USER_POSTS_SUCCESS:
+    case LOAD_HASHTAG_SUCCESS:
     case LOAD_POSTS_SUCCESS:
       draft.loadPostsLoading = false;
       draft.loadPostsDone = true;
-      draft.mainPosts = action.data.concat(draft.mainPosts);
+      draft.mainPosts = draft.mainPosts.concat(action.data);
       draft.hasMorePosts = draft.mainPosts.length === 10;
       break;
+    case LOAD_USER_POSTS_FAILURE:
+    case LOAD_HASHTAG_FAILURE:
     case LOAD_POSTS_FAILURE:
       draft.loadPostsLoading = false;
       draft.loadPostsDone = false;
