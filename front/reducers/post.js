@@ -93,9 +93,9 @@ export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
 export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
 export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 
-export const LOAD_HASHTAG_REQUEST = 'LOAD_HASHTAG_REQUEST';
-export const LOAD_HASHTAG_SUCCESS = 'LOAD_HASHTAG_SUCCESS';
-export const LOAD_HASHTAG_FAILURE = 'LOAD_HASHTAG_FAILURE';
+export const LOAD_HASHTAG_POST_REQUEST = 'LOAD_HASHTAG_POST_REQUEST';
+export const LOAD_HASHTAG_POST_SUCCESS = 'LOAD_HASHTAG_POST_SUCCESS';
+export const LOAD_HASHTAG_POST_FAILURE = 'LOAD_HASHTAG_POST_FAILURE';
 
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
@@ -162,14 +162,14 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
       draft.retweetError = action.error;
       break;
     case LOAD_USER_POSTS_REQUEST:
-    case LOAD_HASHTAG_REQUEST:
+    case LOAD_HASHTAG_POST_REQUEST:
     case LOAD_POSTS_REQUEST:
       draft.loadPostsLoading = true;
       draft.loadPostsDone = false;
       draft.loadPostsError = null;
       break;
     case LOAD_USER_POSTS_SUCCESS:
-    case LOAD_HASHTAG_SUCCESS:
+    case LOAD_HASHTAG_POST_SUCCESS:
     case LOAD_POSTS_SUCCESS:
       draft.loadPostsLoading = false;
       draft.loadPostsDone = true;
@@ -177,7 +177,7 @@ const reducer = (state = initialState, action) => produce(state, (draft) => {
       draft.hasMorePosts = draft.mainPosts.length === 10;
       break;
     case LOAD_USER_POSTS_FAILURE:
-    case LOAD_HASHTAG_FAILURE:
+    case LOAD_HASHTAG_POST_FAILURE:
     case LOAD_POSTS_FAILURE:
       draft.loadPostsLoading = false;
       draft.loadPostsDone = false;

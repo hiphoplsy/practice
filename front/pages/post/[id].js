@@ -5,9 +5,10 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { END } from 'redux-saga';
 
-import AppLayout from '../AppLayout';
-import PostCard from '../PostCard';
+import AppLayout from '../../components/AppLayout';
+import PostCard from '../../components/PostCard';
 import wrapper from '../../store/configureStore';
+
 import { LOAD_POST_REQUEST } from '../../reducers/post';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user';
 
@@ -50,6 +51,7 @@ export const getServerSideProps = wrapper.getServerSideProps(async (context) => 
   })
   context.store.dispatch(END);
   await cotext.store.sagaTask.toPromise();
+  return { props : {} };
 });
 
 export default Post;
