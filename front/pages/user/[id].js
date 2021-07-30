@@ -62,17 +62,17 @@ const Home = () => {
             <div key="twit">
               짹짹
               <br />
-              {userInfo.Posts}
+              {userInfo.Posts.length}
             </div>,
             <div key="following">
               팔로잉
               <br />
-              {userInfo.Followings}
+              {userInfo.Followings.length}
             </div>,
             <div key="follower">
               팔로워
               <br />
-              {userInfo.Followers}
+              {userInfo.Followers.length}
             </div>,
           ]}
         >
