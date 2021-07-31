@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "next -p 3050"
+    "dev": "next -p 3050",
+    "build": "cross-env ANALYZE=true NODE_ENV=production next build"
   },
   "author": "HJ",
   "license": "ISC",
@@ -13,6 +14,7 @@
     "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
     "babel-plugin-styled-components": "^1.13.2",
+    "cross-env": "^7.0.3",
     "eslint-config-airbnb": "^18.2.1",
     "immer": "^9.0.3",
     "moment": "^2.29.1",
